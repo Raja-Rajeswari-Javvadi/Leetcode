@@ -1,0 +1,16 @@
+from typing import List
+
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        # Create a dictionary to store the numbers and their indices
+        num_to_index = {}
+        # Iterate through the list
+        for index, num in enumerate(nums):
+            # Calculate the complement
+            complement = target - num
+            # Check if the complement exists in the dictionary
+            if complement in num_to_index:
+                # Return the indices of the current number and its complement
+                return [num_to_index[complement], index]
+            # Store the index of the current number
+            num_to_index[num] = index
