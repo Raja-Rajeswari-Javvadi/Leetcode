@@ -1,0 +1,26 @@
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        # Map of Roman numerals to their integer values
+        roman_map = {
+            'I': 1,
+            'V': 5,
+            'X': 10,
+            'L': 50,
+            'C': 100,
+            'D': 500,
+            'M': 1000
+        }
+        
+        total = 0
+        # Loop through the string, checking the current and next symbols
+        for i in range(len(s)):
+            # Get current value
+            current_value = roman_map[s[i]]
+            # Check if next symbol exists and has a larger value
+            if i + 1 < len(s) and roman_map[s[i + 1]] > current_value:
+                # Subtract current value for subtractive notation
+                total -= current_value
+            else:
+                # Add current value
+                total += current_value
+        return total
