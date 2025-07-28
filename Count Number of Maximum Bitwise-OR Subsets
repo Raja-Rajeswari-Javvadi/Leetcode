@@ -1,0 +1,25 @@
+class Solution(object):
+    def countMaxOrSubsets(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        max_or = [0]  # Using a list to make it mutable
+        count = [0]   # Using a list to make it mutable
+
+        def dfs(index, curr_or):
+            if index == len(nums):
+                if curr_or == max_or[0]:
+                    count[0] += 1
+                elif curr_or > max_or[0]:
+                    max_or[0] = curr_or
+                    count[0] = 1
+                return
+
+            # Include nums[index]
+            dfs(index + 1, curr_or | nums[index])
+            # Exclude nums[index]
+            dfs(index + 1, curr_or)
+
+        dfs(0, 0)
+        return count[0]
