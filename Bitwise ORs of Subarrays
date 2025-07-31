@@ -1,0 +1,29 @@
+class Solution:
+    def subarrayBitwiseORs(self, arr: list[int]) -> int:
+        # all_ors will store all distinct bitwise ORs found so far
+        all_ors = set()
+        
+        # current_ors will store the distinct bitwise ORs of subarrays
+        # ending at the previous element
+        current_ors = set()
+        
+        for num in arr:
+            # next_current_ors will store distinct bitwise ORs of subarrays
+            # ending at the current element 'num'
+            next_current_ors = set()
+            
+            # The current number itself is a valid subarray OR
+            next_current_ors.add(num)
+            
+            # For each OR value that ended at the previous position,
+            # OR it with the current number to get new OR values
+            for prev_or in current_ors:
+                next_current_ors.add(prev_or | num)
+            
+            # Add all newly found ORs to the overall set of distinct ORs
+            all_ors.update(next_current_ors)
+            
+            # Update current_ors for the next iteration
+            current_ors = next_current_ors
+            
+        return len(all_ors)
