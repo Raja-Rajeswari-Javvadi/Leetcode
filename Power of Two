@@ -1,0 +1,10 @@
+class Solution(object):
+    def isPowerOfTwo(self, n):
+        """
+        :type n: int
+        :rtype: bool
+        """
+        if n <= 0:
+            return False
+        # A power of two has exactly one '1' bit in its binary representation
+        return (n & (n - 1)) == 0
