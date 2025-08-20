@@ -1,0 +1,23 @@
+class Solution:
+    def countSquares(self, matrix: List[List[int]]) -> int:
+        if not matrix or not matrix[0]:
+            return 0
+        
+        m, n = len(matrix), len(matrix[0])
+        count = 0
+        
+        # Create a 2D DP array initialized to 0
+        dp = [[0] * n for _ in range(m)]
+        
+        for i in range(m):
+            for j in range(n):
+                if matrix[i][j] == 1:
+                    # If we're in the first row or first column, we can only have a 1x1 square
+                    if i == 0 or j == 0:
+                        dp[i][j] = 1
+                    else:
+                        # Find the minimum of the squares that can be formed from the top, left, and top-left
+                        dp[i][j] = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1
+                    count += dp[i][j]
+        
+        return count
