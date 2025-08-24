@@ -1,0 +1,26 @@
+class Solution:
+    def longestSubarray(self, nums: list[int]) -> int:
+        max_len = 0
+        zero_count = 0
+        left = 0
+
+        for right in range(len(nums)):
+            if nums[right] == 0:
+                zero_count += 1
+
+            # If more than one zero is in the window, shrink the window from the left
+            while zero_count > 1:
+                if nums[left] == 0:
+                    zero_count -= 1
+                left += 1
+            
+            # The current window (right - left) represents a valid subarray after deleting one element
+            # We subtract 1 because one element is always deleted.
+            max_len = max(max_len, right - left) 
+            
+        # Edge case: if the array contains only 1s, we must delete one, so the length is len(nums) - 1
+        # The loop above correctly handles this if max_len is initialized to 0 and the loop runs.
+        # However, if there are no 0s, max_len will be len(nums), and we need to return len(nums) - 1.
+        # The current calculation of max_len = max(max_len, right - left) already accounts for this implicitly.
+        # If no zeros are present, zero_count remains 0, and right - left will be len(nums) - 1 at the end.
+        return max_len
