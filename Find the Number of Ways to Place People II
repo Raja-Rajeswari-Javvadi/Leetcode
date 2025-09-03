@@ -1,0 +1,26 @@
+class Solution:
+    def numberOfPairs(self, points: list[list[int]]) -> int:
+        # Sort points: primary by x-coordinate (ascending), secondary by y-coordinate (descending)
+        points.sort(key=lambda p: (p[0], -p[1]))
+
+        n = len(points)
+        ans = 0
+
+        for i in range(n):
+            # Alice's coordinates
+            ax, ay = points[i]
+            
+            # Initialize maxY to negative infinity to track max y-coordinate of points encountered so far
+            # that could potentially be inside the rectangle.
+            maxY = float('-inf')
+
+            for j in range(i + 1, n):
+                # Bob's coordinates
+                bx, by = points[j]
+
+                # Check if Bob is in the lower-right quadrant relative to Alice
+                # and if no other points are inside or on the border of the rectangle.
+                if ay >= by and by > maxY:
+                    ans += 1
+                    maxY = by # Update maxY for subsequent points
+        return ans
