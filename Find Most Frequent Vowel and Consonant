@@ -1,0 +1,26 @@
+class Solution(object):
+    def maxFreqSum(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        vowels = set("aeiou")
+        freq = {}
+
+        # Count frequency of each character
+        for ch in s:
+            freq[ch] = freq.get(ch, 0) + 1
+
+        # Find max vowel frequency
+        max_vowel = 0
+        for v in vowels:
+            if v in freq:
+                max_vowel = max(max_vowel, freq[v])
+
+        # Find max consonant frequency
+        max_consonant = 0
+        for ch, f in freq.items():
+            if ch not in vowels:
+                max_consonant = max(max_consonant, f)
+
+        return max_vowel + max_consonant
