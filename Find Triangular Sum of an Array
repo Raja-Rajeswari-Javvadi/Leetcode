@@ -1,0 +1,10 @@
+class Solution:
+    def triangularSum(self, nums: list[int]) -> int:
+        # Iterate as long as the array has more than one element
+        while len(nums) > 1:
+            new_nums = []
+            # Create a new array by summing adjacent elements modulo 10
+            for i in range(len(nums) - 1):
+                new_nums.append((nums[i] + nums[i+1]) % 10)
+            nums = new_nums  # Replace the original array with the new one
+        return nums[0]  # The final remaining element is the triangular sum
