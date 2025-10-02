@@ -1,0 +1,18 @@
+class Solution(object):
+    def maxBottlesDrunk(self, numBottles, numExchange):
+        """
+        :type numBottles: int
+        :type numExchange: int
+        :rtype: int
+        """
+        drunk = numBottles   # drink all initial bottles
+        empty = numBottles   # now we have empty bottles
+
+        while empty >= numExchange:
+            # exchange for 1 new full bottle
+            empty -= numExchange
+            numExchange += 1   # cost increases by 1 each time
+            drunk += 1         # drink that bottle
+            empty += 1         # add the new empty bottle
+
+        return drunk
