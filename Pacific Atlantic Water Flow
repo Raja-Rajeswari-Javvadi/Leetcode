@@ -1,0 +1,34 @@
+class Solution:
+    def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
+        def dfs(i, j, touchesOcean, maxHeight):
+            # Basecase: Out of bound or space has been added to touchesOcean, return 
+            if i < 0 or i >= len(heights) or j < 0 or j >= len(heights[0]) or (i,j) in touchesOcean:
+                return
+            
+            # If the coordinate has a height that is equal or greater than previous maxHeight, then it touches ocean
+            elif heights[i][j] >= maxHeight:
+
+                # Add this coordinate to the touchesOcean set
+                touchesOcean.add((i,j))
+
+                # Check the other for neighbors from this coordinate
+                dfs(i-1,j,touchesOcean,heights[i][j])
+                dfs(i+1,j,touchesOcean,heights[i][j])
+                dfs(i,j-1,touchesOcean,heights[i][j])
+                dfs(i,j+1,touchesOcean,heights[i][j])
+
+        # Initialize a variable to keep track of the coordinates that touch the pacific or atlantic
+        touchesPacific, touchesAtlantic = set(), set()
+
+        # Iterate over the top row and bottom row 
+        for j in range(len(heights[0])):
+            dfs(0,j, touchesPacific, 0)
+            dfs(len(heights)-1,j, touchesAtlantic, 0)
+        
+        # Iterate over the left most column and right most column
+        for i in range(len(heights)):
+            dfs(i,0, touchesPacific, 0)
+            dfs(i,len(heights[0])-1, touchesAtlantic, 0)
+        
+        # Return the union of touch pacific and atlantic
+        return list(touchesPacific & touchesAtlantic)
