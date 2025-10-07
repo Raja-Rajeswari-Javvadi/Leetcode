@@ -1,0 +1,31 @@
+class Solution {
+public:
+    std::vector<int> avoidFlood(std::vector<int>& rains) {
+        int n = rains.size();
+        std::vector<int> ans(n, -1); // Initialize with -1, indicating no drying action
+        std::unordered_map<int, int> lakeIdToFullDay; // Stores lake ID and the day it became full
+        std::set<int> emptyDays; // Stores indices of sunny days (rains[i] == 0)
+
+        for (int i = 0; i < n; ++i) {
+            int lakeId = rains[i];
+
+            if (lakeId == 0) { // Sunny day
+                emptyDays.insert(i); // Add this day as an available day to dry a lake
+                ans[i] = 1; // Default to drying lake 1 if no specific lake needs drying
+            } else { // Rainy day
+                if (lakeIdToFullDay.count(lakeId)) { // If this lake is already full
+                    auto itEmptyDay = emptyDays.upper_bound(lakeIdToFullDay[lakeId]);
+                    // Find the first available sunny day AFTER the lake became full
+                    if (itEmptyDay == emptyDays.end()) {
+                        return {}; // Impossible to avoid flood
+                    }
+                    ans[*itEmptyDay] = lakeId; // Dry this lake on that sunny day
+                    emptyDays.erase(itEmptyDay); // Remove this sunny day from available days
+                }
+                lakeIdToFullDay[lakeId] = i; // Update the day this lake became full
+                ans[i] = -1; // No drying action on a rainy day
+            }
+        }
+        return ans;
+    }
+};
