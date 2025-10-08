@@ -1,0 +1,27 @@
+class Solution {
+    public int[] successfulPairs(int[] spells, int[] potions, long success) {
+        int[] ans = new int[spells.length];
+        Arrays.sort(potions); // Sort potions for binary search
+
+        for (int i = 0; i < spells.length; ++i) {
+            ans[i] = potions.length - firstIndexSuccess(spells[i], potions, success);
+        }
+        return ans;
+    }
+
+    // Helper function to find the first index i s.t. spell * potions[i] >= success
+    private int firstIndexSuccess(int spell, int[] potions, long success) {
+        int l = 0;
+        int r = potions.length; // 'r' is exclusive, representing the end of the search space
+
+        while (l < r) {
+            final int m = l + (r - l) / 2; // Calculate middle index
+            if ((long) spell * potions[m] >= success) {
+                r = m; // Potential candidate, try for a smaller index
+            } else {
+                l = m + 1; // Not successful, need a larger potion
+            }
+        }
+        return l; // 'l' will be the first index of a successful potion, or potions.length if none are successful
+    }
+}
