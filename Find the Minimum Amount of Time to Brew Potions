@@ -1,0 +1,35 @@
+class Solution:
+    def minTime(self, skill: list[int], mana: list[int]) -> int:
+        n = len(skill)
+        m = len(mana)
+
+        # sum_skill is constant for all potions
+        sum_skill = sum(skill)
+        
+        # `prev_wizard_done` represents the time when the last wizard finishes the previous potion.
+        # For the first potion (j=0), it's the time the last wizard finishes, which is sum of all work times.
+        prev_wizard_done = sum_skill * mana[0]
+        
+        for j in range(1, m):
+            # `prev_potion_done` will hold the finish time of the last wizard on potion j-1.
+            # We initialize it with the final finish time from the previous iteration.
+            prev_potion_done = prev_wizard_done
+            
+            # Iterate backwards through wizards to calculate the timing shifts for the current potion.
+            # This is where the magic happens and avoids an array.
+            for i in range(n - 2, -1, -1):
+                # We update the current `prev_potion_done` by removing the time of the `i+1` wizard
+                # on the previous potion (`j-1`).
+                # We update `prev_wizard_done` by taking the max of two times:
+                # 1. The finish time of the current wizard on the previous potion,
+                #    which is `prev_potion_done`.
+                # 2. The finish time of the wizard `i+1` on the current potion minus their brew time,
+                #    which is `prev_wizard_done - skill[i] * mana[j]`.
+                prev_potion_done -= skill[i+1] * mana[j-1]
+                prev_wizard_done = max(prev_potion_done, prev_wizard_done - skill[i] * mana[j])
+            
+            # Add the total time for the current potion to the latest start time.
+            prev_wizard_done += sum_skill * mana[j]
+        
+        return prev_wizard_done
+
