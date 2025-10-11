@@ -1,0 +1,33 @@
+import collections
+import bisect
+
+class Solution:
+    def maximumTotalDamage(self, power: list[int]) -> int:
+        count = collections.Counter(power)
+        unique_damages = sorted(list(count.keys()))
+        n = len(unique_damages)
+        
+        memo = {} # For memoization
+
+        def dp(idx):
+            if idx >= n:
+                return 0
+            if idx in memo:
+                return memo[idx]
+
+            current_damage = unique_damages[idx]
+            current_total_damage = current_damage * count[current_damage]
+
+            # Option 1: Skip current_damage
+            skip_damage = dp(idx + 1)
+
+            # Option 2: Take current_damage
+            # Find the next valid index after taking current_damage
+            # This means finding the first unique_damage > current_damage + 2
+            next_valid_idx = bisect.bisect_right(unique_damages, current_damage + 2)
+            take_damage = current_total_damage + dp(next_valid_idx)
+
+            memo[idx] = max(skip_damage, take_damage)
+            return memo[idx]
+        
+        return dp(0)
