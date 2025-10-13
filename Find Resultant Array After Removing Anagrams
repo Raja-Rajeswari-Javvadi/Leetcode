@@ -1,0 +1,14 @@
+import collections
+
+class Solution:
+    def removeAnagrams(self, words: list[str]) -> list[str]:
+        ans = []
+
+        def is_anagram(word1: str, word2: str) -> bool:
+            return collections.Counter(word1) == collections.Counter(word2)
+
+        for word in words:
+            if not ans or not is_anagram(ans[-1], word):
+                ans.append(word)
+        
+        return ans
