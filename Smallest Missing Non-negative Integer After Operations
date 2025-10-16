@@ -1,0 +1,22 @@
+class Solution {
+public:
+    int findSmallestInteger(vector<int>& nums, int value) {
+        // Use an unordered_map or a vector for remainders
+        // A vector of size 'value' is more efficient here
+        vector<int> counts(value, 0);
+
+        for (int num : nums) {
+            // Handle negative remainders correctly
+            counts[(num % value + value) % value]++;
+        }
+
+        for (int i = 0; ; ++i) { // Iterate indefinitely until the MEX is found
+            int required_remainder = i % value;
+            if (counts[required_remainder] > 0) {
+                counts[required_remainder]--; // "Use up" one element for this remainder
+            } else {
+                return i; // This 'i' cannot be formed, so it's the MEX
+            }
+        }
+    }
+};
