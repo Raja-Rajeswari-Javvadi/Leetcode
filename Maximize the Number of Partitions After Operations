@@ -1,0 +1,53 @@
+import functools
+
+class Solution:
+    def maxPartitionsAfterOperations(self, s: str, k: int) -> int:
+        n = len(s)
+        
+        @functools.lru_cache(None)
+        def dp(i: int, can_change: bool, mask: int) -> int:
+            """
+            Args:
+                i: The current index in the string.
+                can_change: A boolean indicating if a character change is still allowed.
+                mask: A bitmask representing the distinct characters in the current partition.
+            Returns:
+                The maximum number of partitions from index i onwards.
+            """
+            if i == n:
+                # One partition for the last segment
+                return 1
+            
+            res = 0
+            
+            # Scenario 1: Do not change the character at s[i]
+            char_bit = 1 << (ord(s[i]) - ord('a'))
+            next_mask_no_change = mask | char_bit
+            
+            if next_mask_no_change.bit_count() > k:
+                # Starting a new partition because adding s[i] exceeds k distinct characters
+                res = 1 + dp(i + 1, can_change, char_bit)
+            else:
+                # Continuing the current partition
+                res = dp(i + 1, can_change, next_mask_no_change)
+            
+            # Scenario 2: Change the character at s[i] (if change is available)
+            if can_change:
+                for j in range(26):
+                    changed_char_bit = 1 << j
+                    next_mask_changed = mask | changed_char_bit
+                    
+                    if next_mask_changed.bit_count() > k:
+                        # Starting a new partition with the changed character
+                        res = max(res, 1 + dp(i + 1, False, changed_char_bit))
+                    else:
+                        # Continuing the current partition with the changed character
+                        res = max(res, dp(i + 1, False, next_mask_changed))
+            
+            return res
+
+        # Initial call: start at index 0, with one change allowed, and an empty mask.
+        # The result needs to be handled carefully for the case of an empty string
+        # which is implicitly handled by the base case returning 1.
+        return dp(0, True, 0)
+
