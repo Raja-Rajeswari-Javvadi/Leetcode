@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int maxFrequency(vector<int>& nums, int k, int numOperations) {
+        int ans = 1;
+        long long adjustable = 0;  
+        unordered_map<int,int> count;
+        map<long long,long long> line;  
+        set<long long> candidates;
+        
+        for (int num : nums) {
+            count[num]++;
+            long long start = (long long)num - k;
+            long long end   = (long long)num + k + 1;  
+            line[start] += 1;
+            line[end]   -= 1;
+            
+            candidates.insert(num);
+            candidates.insert(start);
+            candidates.insert(end);
+        }
+        
+        for (long long t : candidates) {
+            if (line.count(t)) {
+                adjustable += line[t];
+            }
+            int cntT = 0;
+            if (count.count(t)) {
+                cntT = count[t];
+            }
+            long long canUse = adjustable - cntT;  
+            long long useOps = min<long long>(numOperations, canUse);
+            ans = max(ans, (int)(cntT + useOps));
+        }
+        
+        return ans;
+    }
+};
