@@ -1,0 +1,37 @@
+class Solution:
+    def totalMoney(self, n: int) -> int:
+        # Calculate the number of full weeks
+        weeks = n // 7
+        # Calculate the number of remaining days in the last partial week
+        remaining_days = n % 7
+
+        total_money = 0
+
+        # Sum for the full weeks:
+        # The sum for the first week is 1+2+...+7 = 28.
+        # The sum for the second week is 2+3+...+8 = 35.
+        # The sum for the k-th week is k + (k+1) + ... + (k+6).
+        # This is an arithmetic series. The sum of an arithmetic series is (first_term + last_term) * number_of_terms / 2.
+        # Here, the first term for week 'i' is 'i', and the last term is 'i+6'.
+        # The sum for week 'i' is (i + i+6) * 7 / 2 = (2i + 6) * 7 / 2 = (i + 3) * 7.
+        # The sum of money for 'weeks' full weeks can be calculated by summing these weekly sums.
+        # Alternatively, we can use the sum of an arithmetic series for the total of full weeks.
+        # The first full week starts with 1, 2, ..., 7.
+        # The last full week starts with 'weeks', 'weeks'+1, ..., 'weeks'+6.
+        # Sum of an arithmetic series: (first_value + last_value) * count / 2
+        # For the full weeks, the first week's sum is 28. The last full week's sum is 28 + 7*(weeks-1).
+        # The total sum for full weeks is (28 + (28 + 7 * (weeks - 1))) * weeks // 2
+        total_money += weeks * 28 + 7 * (weeks - 1) * weeks // 2
+
+        # Sum for the remaining days:
+        # The deposits for the remaining days start from (weeks + 1) on the new Monday,
+        # then (weeks + 2) on Tuesday, and so on.
+        # This is another arithmetic series starting from (weeks + 1) and ending at (weeks + remaining_days).
+        # The sum is (first_term + last_term) * number_of_terms / 2
+        # Here, first_term = weeks + 1, last_term = weeks + remaining_days, number_of_terms = remaining_days.
+        if remaining_days > 0:
+            first_day_of_partial_week = weeks + 1
+            last_day_of_partial_week = weeks + remaining_days
+            total_money += (first_day_of_partial_week + last_day_of_partial_week) * remaining_days // 2
+
+        return total_money
