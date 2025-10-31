@@ -1,0 +1,16 @@
+class Solution {
+public:
+    std::vector<int> getSneakyNumbers(std::vector<int>& nums) {
+        std::vector<int> result;
+        // Frequency array for numbers 0-100 (assuming max value is 99)
+        int frequency[101] = {0}; 
+
+        for (int number : nums) {
+            frequency[number]++;
+            if (frequency[number] == 2) {
+                result.push_back(number);
+            }
+        }
+        return result;
+    }
+};
