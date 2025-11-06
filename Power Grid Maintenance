@@ -1,0 +1,92 @@
+import java.util.*;
+
+class Solution {
+    class DSU {
+        int[] parent;
+        Map<Integer, TreeSet<Integer>> onlineStations;
+
+        public DSU(int c) {
+            parent = new int[c + 1];
+            onlineStations = new HashMap<>();
+            for (int i = 1; i <= c; i++) {
+                parent[i] = i;
+                onlineStations.put(i, new TreeSet<>());
+                onlineStations.get(i).add(i);
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i)
+                return i;
+            return parent[i] = find(parent[i]);
+        }
+
+        public void union(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            if (rootI != rootJ) {
+                // Merge the smaller set into the larger set for efficiency
+                if (onlineStations.get(rootI).size() < onlineStations.get(rootJ).size()) {
+                    int temp = rootI;
+                    rootI = rootJ;
+                    rootJ = temp;
+                }
+                onlineStations.get(rootI).addAll(onlineStations.get(rootJ));
+                onlineStations.remove(rootJ);
+                parent[rootJ] = rootI;
+            }
+        }
+    }
+
+    // Changed return type from List<Integer> to int[]
+    public int[] processQueries(int c, int[][] connections, int[][] queries) {
+        DSU dsu = new DSU(c);
+        
+        // Initial unions based on connections
+        for (int[] conn : connections) {
+            dsu.union(conn[0], conn[1]); // Corrected array access
+        }
+
+        boolean[] isOnline = new boolean[c + 1];
+        Arrays.fill(isOnline, true);
+
+        List<Integer> resultsList = new ArrayList<>(); // Use a temporary list
+
+        for (int[] query : queries) {
+            int type = query[0]; // Corrected array access
+            int stationId = query[1]; // Corrected array access
+
+            if (type == 1) {
+                // Maintenance check
+                if (isOnline[stationId]) {
+                    resultsList.add(stationId);
+                } else {
+                    int root = dsu.find(stationId);
+                    TreeSet<Integer> componentStations = dsu.onlineStations.get(root);
+                    if (componentStations == null || componentStations.isEmpty()) {
+                        resultsList.add(-1);
+                    } else {
+                        resultsList.add(componentStations.first());
+                    }
+                }
+            } else {
+                // Station goes offline
+                if (isOnline[stationId]) {
+                    isOnline[stationId] = false;
+                    int root = dsu.find(stationId);
+                    if (dsu.onlineStations.containsKey(root)) {
+                        dsu.onlineStations.get(root).remove(stationId);
+                    }
+                }
+            }
+        }
+        
+        // Convert the List<Integer> to int[]
+        int[] resultsArray = new int[resultsList.size()];
+        for (int i = 0; i < resultsList.size(); i++) {
+            resultsArray[i] = resultsList.get(i);
+        }
+
+        return resultsArray; // Return the primitive array
+    }
+}
