@@ -28,5 +28,4 @@ class Solution:
                             return True
                         next_nums.pop()
             return False
-
         return dfs([float(x) for x in cards])
