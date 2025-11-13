@@ -1,0 +1,12 @@
+class Solution:
+    def maxOperations(self, s: str) -> int:
+        ans = 0
+        ones = 0
+        for i, c in enumerate(s):
+            if c == '1':
+                ones += 1
+            elif i + 1 == len(s) or s[i + 1] == '1':
+                # If a '0' is encountered and it's either the last character
+                # or followed by a '1', all preceding '1's can be moved past it.
+                ans += ones
+        return ans
